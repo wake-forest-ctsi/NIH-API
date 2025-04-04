@@ -1,105 +1,61 @@
----
-date_revised: 2022/06/15
-revised_by: wfordwfu
----
+# NIH Reporter API Client
 
-# WFBMI Jupyter Lab Devcontainer
+This script fetches award data from the NIH Reporter API for fiscal years 2009-2024 and processes it according to the specified format.
 
-A Jupyter devcontainer datascience solution based on the [Jupyter/Docker-Stacks](https://github.com/jupyter/docker-stacks) solution.
+## Setup
 
-- [WFBMI Jupyter Lab Devcontainer](#wfbmi-jupyter-lab-devcontainer)
-  - [Getting Started](#getting-started)
-    - [Tools to install locally](#tools-to-install-locally)
-  - [Useful Docker commands to know](#useful-docker-commands-to-know)
-  - [Jupyter commands](#jupyter-commands)
-  - [Other helpful things:](#other-helpful-things)
-  - [Jupyter Magics](#jupyter-magics)
-  - [Issues](#issues)
-  - [Reference](#reference)
+Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-## Getting Started
+## Usage
 
-### Access Jupyter Lab
+Run the script:
+```bash
+python nih_api_client.py
+```
 
-- Make sure server is running `jupyter server list`
-- From shell run `./jupyter.sh` or go to [http://localhost:8888/lab](http://localhost:8888/lab)
+The script will:
+1. Fetch award data for fiscal years 2009-2024
+2. Process the data according to the specified format
+3. Save the results to a CSV file named `nih_awards_YYYYMMDD.csv`
 
-### Tools to install locally
+## Output Fields
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) - Ideally install from Software Center
-- [VS Code](https://code.visualstudio.com/download)
-- [VS Code Remote Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+The script processes the following fields from the NIH Reporter API:
+- Organization ID (IPF)
+- Project Number
+- Funding Mechanism
+- NIH Reference
+- PI Name
+- PI Person ID
+- Project Title
+- Department Name
+- NIH Department Combining Name
+- NIH MC Combining Name
+- Direct Cost
+- Indirect Cost
+- Funding
+- Congressional District
+- City
+- State/Country Name
+- ZIP Code
+- Attributed to Medical School
+- Medical School Location
+- Institution Type
+- Award Notice Date
+- Opportunity Number
+- Major Component Name
+- Medical School Flag
+- Medical School Name
+- Multi-Campus Institution
+- Fiscal Year
+- Activity Code
+- Application Type Code
 
-## Useful Docker commands to know (Run outside VS Code)
+## Notes
 
-These are useful if you JupyterLab instance has locked up
-
-- `docker ps` list running containers
-- `docker kill $(docker ps -q)` stop any running containers
-- `docker rm $(docker ps -aq)` remove any stopped containers
-- `docker logs wfbmi-dev` If you need to get the url\token to log back into your instance
-
-## Jupyter commands
-
-Start here: [How to use Jupyter Lab (YouTube)](https://www.youtube.com/watch?v=A5YyoCKxEOU)
-
-Think of a jupyter notebook interface like VIM lite.  You can use your mouse, but you can navigate jupyter via keyboard much faster.
-
-- To enter a cell: enter
-- To run a cell: ctrl-enter
-- To run a cell and create a new one: shift-enter
-- To exit a cell back to command mode: escape
-
-When in command mode you have commands like this:
-
-- Basic navigation: enter, shift-enter, up/k, down/j
-- Saving the notebook: s
-- Change Cell types: y, m, 1-6, t
-- Cell creation: a, b
-- Cell editing: x, c, v, d, z
-- Kernel operations: i, 0 (press twice)
-
-## Other helpful things:
-
-- If you need a package and it's not installed, you can run `pip install x` directly within a code cell.  Jupyter will know what to do.
-- If you need help with a function you can type it into a cell followed by ? and run `print?`
-- While writing code, hitting Tab will display hints
-
-## Jupyter Magics
-
-Lots to learn here, but this is a good starting list
-
-- `%lsmagic` list of magic commands.
-- `%run <file name>.py` to run an external python file within your jupyter notebook.
-- `%%time` at the top of a code block will return the execution time
-- `%who` list all the current variables in a notebook
-- `%pinfo <variable>` query specifics about a given variable in a notebook
-- `%env` list all the environment variables
-- `%env FOO=Bar` set the value of a new environment variable
-
-
-There's lots more to explore about Jupyter:
-
-- Check out the help menu in JupyterLab
-- [Jupyter lab docs](https://jupyterlab.readthedocs.io/en/stable/getting_started/overview.html)
-- [Jupyter Docker Stacks](https://jupyter-docker-stacks.readthedocs.io/en/latest/index.html)
-- [jupyter notebook docs](https://jupyter-notebook.readthedocs.io/en/stable/index.html)
-- [jupyter docker stacks](https://jupyter-docker-stacks.readthedocs.io/en/latest/index.html)
-- [Example Notebooks](https://nbviewer.jupyter.org/github/jupyter/notebook/tree/master/docs/source/examples/Notebook/)
-
-## Issues
-
-- [nbconvert changed a value in version 6.0 and many jupyter related packages haven't updated](https://nbconvert.readthedocs.io/en/latest/changelog.html#id22)
-  - Example error "Config option `template_path` not recognized by `*`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?"
-
-
-## Reference
-
-- [Devcontainer Spec](https://containers.dev)
-- [Based on the Microsoft provided mod of datascience jupyter stack](https://github.com/microsoft/vscode-dev-containers/tree/main/containers/jupyter-datascience-notebooks)
-- [Devcontainer/CLI](https://github.com/devcontainers/cli)
-
-## Feature Ideas
-
-- [xeus-sqlite](https://xeus-sqlite.readthedocs.io/en/latest/index.html)
-  - `conda install xeus-sqlite jupyterlab -c conda-forge`
+- Some fields (medical_school_location, medical_school_name, multi_campus_institution) are not available in the API and will be set to None
+- The script uses pagination to handle large result sets
+- The API has rate limits, so the script includes error handling for API responses 
